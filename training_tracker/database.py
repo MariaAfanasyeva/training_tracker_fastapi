@@ -81,7 +81,7 @@ trainings = sqlalchemy.Table(
     sqlalchemy.Column(
         "training_date", sqlalchemy.DateTime, default=datetime.date.today()
     ),
-    sqlalchemy.Column("status", sqlalchemy.String),
+    sqlalchemy.Column("status", sqlalchemy.String, default="Started"),
     sqlalchemy.Column(
         "user_id", sqlalchemy.ForeignKey("users.id", ondelete="SET NULL"), nullable=False
     ),
