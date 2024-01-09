@@ -48,9 +48,7 @@ async def login(user: UserIn):
 @router.get("/confirm/{token}")
 async def confirm_email(token: str):
     email = get_subject_for_token_type(token, "confirmation")
-    query = (
-        users.update().where(users.c.email == email).values(confirmed=True)
-    )
+    query = users.update().where(users.c.email == email).values(confirmed=True)
 
     logger.debug(query)
 

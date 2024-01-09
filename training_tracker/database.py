@@ -83,7 +83,9 @@ trainings = sqlalchemy.Table(
     ),
     sqlalchemy.Column("status", sqlalchemy.String, default="Started"),
     sqlalchemy.Column(
-        "user_id", sqlalchemy.ForeignKey("users.id", ondelete="SET NULL"), nullable=False
+        "user_id",
+        sqlalchemy.ForeignKey("users.id", ondelete="SET NULL"),
+        nullable=False,
     ),
 )
 
@@ -119,7 +121,9 @@ sets = sqlalchemy.Table(
     ),
 )
 
-engine = sqlalchemy.create_engine(config.DATABASE_URL)
+connect_args = {"check_same_thread": False} if "sqlite" in config.DATABASE_URL else {}
+
+engine = sqlalchemy.create_engine(config.DATABASE_URL, connect_args=connect_args)
 
 
 db_args = {"min_size": 1, "max_size": 3} if "postgres" in config.DATABASE_URL else {}
