@@ -13,6 +13,7 @@ router = APIRouter()
 async def create_exercise_group(
     group: GroupIn, current_user: Annotated[User, Depends(get_current_user)]
 ):
+    # TODO: add validating is this exercise group already exists
     data = {**group.model_dump(), "added_by_user_id": current_user.id}
     query = groups.insert().values(data)
     last_record_id = await database.execute(query)
