@@ -2,48 +2,48 @@ import pytest
 from httpx import AsyncClient
 
 from training_tracker import security
-from training_tracker.tests.helpers import create_weight
+from training_tracker.tests.helpers import create_distance
 
 
 @pytest.fixture()
-async def created_weight(async_client: AsyncClient, logged_in_token: str):
-    return await create_weight(1, "Kg", async_client, logged_in_token)
+async def created_distance(async_client: AsyncClient, logged_in_token: str):
+    return await create_distance(1, "Km", async_client, logged_in_token)
 
 
 @pytest.mark.anyio
 @pytest.mark.parametrize(
     "test_input, expected",
-    [("Kg", "kg"), ("KG", "kg"), ("kg", "kg"), ("kG", "kg"), ("G", "g"), ("g", "g")],
+    [("Km", "km"), ("KM", "km"), ("km", "km"), ("kM", "km"), ("M", "m"), ("m", "m")],
 )
-async def test_create_weight(
+async def test_create_distance(
     async_client: AsyncClient,
     confirmed_user: dict,
     logged_in_token: str,
     test_input: str,
     expected: str,
 ):
-    weight = 1
+    distance = 1
     units = test_input
     response = await async_client.post(
-        "/weight",
-        json={"weight": weight, "units": units},
+        "/distance",
+        json={"distance": distance, "units": units},
         headers={"Authorization": f"Bearer {logged_in_token}"},
     )
     assert response.status_code == 201
     assert {
         "id": 1,
-        "weight": weight,
+        "distance": distance,
         "units": expected,
         "added_by_user_id": confirmed_user["id"],
     }.items() <= response.json().items()
 
 
 @pytest.mark.anyio
-async def test_create_weight_wrong_data(
+async def test_create_distance_wrong_data(
     async_client: AsyncClient, logged_in_token: str
 ):
     response = await async_client.post(
-        "/weight",
+        "/distance",
         json={},
         headers={"Authorization": f"Bearer {logged_in_token}"},
     )
@@ -51,7 +51,7 @@ async def test_create_weight_wrong_data(
 
 
 @pytest.mark.anyio
-async def test_create_weight_expired_token(
+async def test_create_distance_expired_token(
     async_client: AsyncClient, mocker, confirmed_user: dict
 ):
     mocker.patch(
@@ -59,8 +59,8 @@ async def test_create_weight_expired_token(
     )
     token = security.create_access_token(confirmed_user["email"])
     response = await async_client.post(
-        "/weight",
-        json={"weigth": 1, "units": "Kg"},
+        "/distance",
+        json={"distance": 1, "units": "Kg"},
         headers={"Authorization": f"Bearer {token}"},
     )
     assert response.status_code == 401
@@ -68,16 +68,16 @@ async def test_create_weight_expired_token(
 
 
 @pytest.mark.anyio
-async def test_get_all_weights(async_client: AsyncClient, created_weight: dict):
-    response = await async_client.get("/weights")
+async def test_get_all_distances(async_client: AsyncClient, created_distance: dict):
+    response = await async_client.get("/distances")
     assert response.status_code == 200
-    assert created_weight.items() <= response.json()[0].items()
+    assert created_distance.items() <= response.json()[0].items()
 
 
 @pytest.mark.anyio
-async def test_get_one_weight(async_client: AsyncClient, logged_in_token: str):
-    await create_weight(1, "Kg", async_client, logged_in_token)
-    await create_weight(2, "Kg", async_client, logged_in_token)
-    response = await async_client.get("/weight/1")
-    assert response.json()["weight"] == 1
+async def test_get_one_distance(async_client: AsyncClient, logged_in_token: str):
+    await create_distance(1, "Km", async_client, logged_in_token)
+    await create_distance(2, "Km", async_client, logged_in_token)
+    response = await async_client.get("/distance/1")
+    assert response.json()["distance"] == 1
     assert response.status_code == 200

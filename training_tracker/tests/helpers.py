@@ -21,3 +21,14 @@ async def create_weight(
         headers={"Authorization": f"Bearer {logged_in_token}"},
     )
     return response.json()
+
+
+async def create_distance(
+    distance: float, units: str, async_client: AsyncClient, logged_in_token: str
+) -> dict:
+    response = await async_client.post(
+        "/distance",
+        json={"distance": distance, "units": units},
+        headers={"Authorization": f"Bearer {logged_in_token}"},
+    )
+    return response.json()
