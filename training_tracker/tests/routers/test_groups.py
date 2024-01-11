@@ -55,3 +55,12 @@ async def test_get_all_groups(async_client: AsyncClient, created_group: dict):
     response = await async_client.get("/groups")
     assert response.status_code == 200
     assert created_group.items() <= response.json()[0].items()
+    
+
+@pytest.mark.anyio
+async def test_get_one_group(async_client: AsyncClient, logged_in_token:str):
+    await create_group("Test group 1", async_client, logged_in_token)
+    await create_group("Test group 2", async_client, logged_in_token)
+    response = await async_client.get("/group/1")
+    assert "Test group 1" in response.json()["name"]
+    assert response.status_code == 200
