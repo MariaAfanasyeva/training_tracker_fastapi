@@ -68,6 +68,20 @@ async def test_create_distance_expired_token(
 
 
 @pytest.mark.anyio
+async def test_create_distance_already_exists(
+    async_client: AsyncClient, logged_in_token: str, created_distance: dict
+):
+    distance = 1
+    units = "Km"
+    response = await async_client.post(
+        "/distance",
+        json={"distance": distance, "units": units},
+        headers={"Authorization": f"Bearer {logged_in_token}"},
+    )
+    assert response.status_code == 403
+
+
+@pytest.mark.anyio
 async def test_get_all_distances(async_client: AsyncClient, created_distance: dict):
     response = await async_client.get("/distances")
     assert response.status_code == 200

@@ -5,6 +5,7 @@ from training_tracker.routers.distances import router as distances_router
 from training_tracker.routers.groups import router as groups_router
 from training_tracker.routers.users import router as user_router
 from training_tracker.routers.weights import router as weights_router
+from training_tracker.routers.exercises import router as exercise_router
 
 app = FastAPI()
 
@@ -23,3 +24,4 @@ app.include_router(user_router)
 app.include_router(groups_router)
 app.include_router(weights_router)
 app.include_router(distances_router)
+app.include_router(exercise_router)

@@ -9,6 +9,7 @@ os.environ["ENV_STATE"] = "test"
 
 from training_tracker.database import database, engine, metadata, users  # noqa: E402
 from training_tracker.main import app  # noqa: E402
+from training_tracker.tests.helpers import create_group  # noqa: E402
 
 metadata.create_all(engine)
 
@@ -61,3 +62,8 @@ async def confirmed_user(registered_user: dict) -> dict:
 async def logged_in_token(async_client: AsyncClient, confirmed_user: dict) -> str:
     response = await async_client.post("/token", json=confirmed_user)
     return response.json()["access_token"]
+
+
+@pytest.fixture()
+async def created_group(async_client: AsyncClient, logged_in_token: str):
+    return await create_group("Test group", async_client, logged_in_token)

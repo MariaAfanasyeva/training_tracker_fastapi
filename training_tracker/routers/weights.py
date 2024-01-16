@@ -23,7 +23,7 @@ async def create_weight(
     res = await database.fetch_all(existing_data)
     if res:
         return JSONResponse(
-            content={"message": "This weight is already exists"}, status_code=409
+            content={"message": "This weight is already exists"}, status_code=403
         )
     data = {**dict_data, "added_by_user_id": current_user.id}
     query = weights.insert().values(data)
