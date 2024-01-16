@@ -68,6 +68,20 @@ async def test_create_weight_expired_token(
 
 
 @pytest.mark.anyio
+async def test_create_weight_already_exists(
+    async_client: AsyncClient, logged_in_token: str, created_weight: dict
+):
+    weight = 1
+    units = "Kg"
+    response = await async_client.post(
+        "/weight",
+        json={"weight": weight, "units": units},
+        headers={"Authorization": f"Bearer {logged_in_token}"},
+    )
+    assert response.status_code == 403
+
+
+@pytest.mark.anyio
 async def test_get_all_weights(async_client: AsyncClient, created_weight: dict):
     response = await async_client.get("/weights")
     assert response.status_code == 200

@@ -32,3 +32,14 @@ async def create_distance(
         headers={"Authorization": f"Bearer {logged_in_token}"},
     )
     return response.json()
+
+
+async def create_exercise(
+    exercise_name: str, group_id: int, async_client: AsyncClient, logged_in_token: str
+) -> dict:
+    response = await async_client.post(
+        "/exercise",
+        json={"name": exercise_name, "group_id": group_id},
+        headers={"Authorization": f"Bearer {logged_in_token}"},
+    )
+    return response.json()

@@ -5,11 +5,6 @@ from training_tracker import security
 from training_tracker.tests.helpers import create_group
 
 
-@pytest.fixture()
-async def created_group(async_client: AsyncClient, logged_in_token: str):
-    return await create_group("Test group", async_client, logged_in_token)
-
-
 @pytest.mark.anyio
 async def test_create_group(
     async_client: AsyncClient, confirmed_user: dict, logged_in_token: str
@@ -36,6 +31,19 @@ async def test_create_group_wrong_data(async_client: AsyncClient, logged_in_toke
         headers={"Authorization": f"Bearer {logged_in_token}"},
     )
     assert response.status_code == 422
+
+
+@pytest.mark.anyio
+async def test_greate_group_already_exists(
+    async_client: AsyncClient, logged_in_token: str, created_group: dict
+):
+    name = "Test group"
+    response = await async_client.post(
+        "/group",
+        json={"name": name},
+        headers={"Authorization": f"Bearer {logged_in_token}"},
+    )
+    assert response.status_code == 403
 
 
 @pytest.mark.anyio
