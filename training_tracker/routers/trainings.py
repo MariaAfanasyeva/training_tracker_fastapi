@@ -10,11 +10,14 @@ from training_tracker.security import get_current_user
 
 router = APIRouter()
 
+
 def get_current_date():
     return datetime.date.today()
 
+
 def get_current_user_id(current_user):
     return current_user.id
+
 
 @router.post("/training", response_model=Training, status_code=201)
 async def create_training(current_user: Annotated[User, Depends(get_current_user)]):
@@ -51,6 +54,7 @@ async def get_training_by_id_for_user(
     training = await database.fetch_one(query)
     if training["user_id"] != user_id:
         return JSONResponse(
-            content={"message": "Training with this id doesn't belong you"}, status_code=403
+            content={"message": "Training with this id doesn't belong you"},
+            status_code=403,
         )
     return training
