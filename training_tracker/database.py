@@ -1,7 +1,6 @@
-import datetime
-
 import databases
 import sqlalchemy
+from sqlalchemy import sql
 
 from training_tracker.config import config
 
@@ -38,10 +37,8 @@ users = sqlalchemy.Table(
     sqlalchemy.Column("id", sqlalchemy.Integer, primary_key=True),
     sqlalchemy.Column("email", sqlalchemy.String, unique=True),
     sqlalchemy.Column("password", sqlalchemy.String),
-    sqlalchemy.Column("confirmed", sqlalchemy.Boolean, default=False),
-    sqlalchemy.Column(
-        "created_at", sqlalchemy.DateTime, default=datetime.datetime.utcnow()
-    ),
+    sqlalchemy.Column("confirmed", sqlalchemy.Boolean, server_default=sql.false()),
+    sqlalchemy.Column("created_at", sqlalchemy.DateTime, server_default=sql.func.now()),
 )
 
 weights = sqlalchemy.Table(
@@ -79,9 +76,9 @@ trainings = sqlalchemy.Table(
     metadata,
     sqlalchemy.Column("id", sqlalchemy.Integer, primary_key=True),
     sqlalchemy.Column(
-        "training_date", sqlalchemy.DateTime, default=datetime.date.today()
+        "training_date", sqlalchemy.Date, server_default=sql.func.current_date()
     ),
-    sqlalchemy.Column("status", sqlalchemy.String, default="Started"),
+    sqlalchemy.Column("status", sqlalchemy.String, server_default="Started"),
     sqlalchemy.Column(
         "user_id",
         sqlalchemy.ForeignKey("users.id", ondelete="SET NULL"),

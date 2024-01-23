@@ -9,7 +9,14 @@ os.environ["ENV_STATE"] = "test"
 
 from training_tracker.database import database, engine, metadata, users  # noqa: E402
 from training_tracker.main import app  # noqa: E402
-from training_tracker.tests.helpers import create_group  # noqa: E402
+from training_tracker.tests.helpers import (
+    create_distance,  # noqa: E402
+    create_exercise,
+    create_group,
+    create_set,
+    create_training,
+    create_weight,
+)
 
 metadata.create_all(engine)
 
@@ -67,3 +74,63 @@ async def logged_in_token(async_client: AsyncClient, confirmed_user: dict) -> st
 @pytest.fixture()
 async def created_group(async_client: AsyncClient, logged_in_token: str):
     return await create_group("Test group", async_client, logged_in_token)
+
+
+@pytest.fixture()
+async def created_distance(async_client: AsyncClient, logged_in_token: str):
+    return await create_distance(1, "Km", async_client, logged_in_token)
+
+
+@pytest.fixture()
+async def created_exercise(
+    async_client: AsyncClient, logged_in_token: str, created_group: dict
+):
+    return await create_exercise(
+        "Test name", created_group["id"], async_client, logged_in_token
+    )
+
+
+@pytest.fixture()
+async def created_weight(async_client: AsyncClient, logged_in_token: str):
+    return await create_weight(1, "Kg", async_client, logged_in_token)
+
+
+@pytest.fixture()
+async def created_training(async_client: AsyncClient, logged_in_token: str, mocker):
+    return await create_training(async_client, logged_in_token, 1, mocker)
+
+
+@pytest.fixture
+async def created_set_with_distance(
+    async_client: AsyncClient,
+    logged_in_token: str,
+    created_exercise: dict,
+    created_training: dict,
+    created_distance: dict,
+):
+    return await create_set(
+        async_client=async_client,
+        logged_in_token=logged_in_token,
+        exercise_count=15,
+        exercise_id=created_exercise["id"],
+        training_id=created_training["id"],
+        distance_id=created_distance["id"],
+    )
+
+
+@pytest.fixture
+async def created_set_with_weight(
+    async_client: AsyncClient,
+    logged_in_token: str,
+    created_exercise: dict,
+    created_training: dict,
+    created_weight: dict,
+):
+    return await create_set(
+        async_client=async_client,
+        logged_in_token=logged_in_token,
+        exercise_count=20,
+        exercise_id=created_exercise["id"],
+        training_id=created_training["id"],
+        weight_id=created_weight["id"],
+    )

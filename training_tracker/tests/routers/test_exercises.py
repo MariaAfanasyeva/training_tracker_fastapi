@@ -5,11 +5,6 @@ from training_tracker import security
 from training_tracker.tests.helpers import create_exercise
 
 
-@pytest.fixture()
-async def created_exercise(async_client: AsyncClient, logged_in_token: str, created_group: dict):
-    return await create_exercise("Test name", created_group["id"], async_client, logged_in_token)
-
-
 @pytest.mark.anyio
 async def test_create_exercise(
     async_client: AsyncClient,
