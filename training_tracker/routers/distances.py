@@ -15,10 +15,10 @@ async def create_distance(
     distance: DistanceIn, current_user: Annotated[User, Depends(get_current_user)]
 ):
     dict_data = distance.model_dump()
-    dict_data["units"] = dict_data["units"].lower()
+    dict_data["units"] = dict_data.get("units").lower()
     existing_data = distances.select().where(
-        (distances.c.distance == dict_data["distance"])
-        & (distances.c.units == dict_data["units"])
+        (distances.c.distance == dict_data.get("distance"))
+        & (distances.c.units == dict_data.get("units"))
     )
     res = await database.fetch_all(existing_data)
     if res:

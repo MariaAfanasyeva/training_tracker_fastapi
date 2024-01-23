@@ -5,11 +5,6 @@ from training_tracker import security
 from training_tracker.tests.helpers import create_distance
 
 
-@pytest.fixture()
-async def created_distance(async_client: AsyncClient, logged_in_token: str):
-    return await create_distance(1, "Km", async_client, logged_in_token)
-
-
 @pytest.mark.anyio
 @pytest.mark.parametrize(
     "test_input, expected",

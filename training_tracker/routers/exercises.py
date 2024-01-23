@@ -16,8 +16,8 @@ async def create_exercise(
 ):
     dict_data = exercise.model_dump()
     existing_data = exersices.select().where(
-        (exersices.c.name == dict_data["name"])
-        & (exersices.c.group_id == dict_data["group_id"])
+        (exersices.c.name == dict_data.get("name"))
+        & (exersices.c.group_id == dict_data.get("group_id"))
     )
     res = await database.fetch_all(existing_data)
     if res:

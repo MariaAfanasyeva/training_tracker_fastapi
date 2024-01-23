@@ -15,7 +15,7 @@ async def create_exercise_group(
     group: GroupIn, current_user: Annotated[User, Depends(get_current_user)]
 ):
     dict_data = group.model_dump()
-    existing_data = groups.select().where(groups.c.name == dict_data["name"])
+    existing_data = groups.select().where(groups.c.name == dict_data.get("name"))
     res = await database.fetch_all(existing_data)
     if res:
         return JSONResponse(
